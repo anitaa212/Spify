@@ -4,493 +4,743 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mi panel · Spify</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://lirvbjfnjrvdmshjrrbl.supabase.co">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
 <style>
-:root{--bg:#07070c;--card:#121018;--line:#2a2440;--tx:#f4f1e8;--mut:#a99fc9;--violet:#5b2de0;--violet2:#8257f0;--gold:#f5e6a8;--ok:#3ddc97;--bf:#dc143c;color-scheme:dark}
-*{box-sizing:border-box}
+:root{--bg:#0a0a12;--card:#141423;--card2:#1a1a2e;--line:#252538;--tx:#f4f1e8;--mut:#8b8ba7;--mut2:#6b6b85;--violet:#5b2de0;--violet2:#8257f0;--violetlight:rgba(130,87,240,.12);--gold:#f5e6a8;--ok:#3ddc97;--bf:#dc143c;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:radial-gradient(circle at 80% 0%,#1a1030,transparent 60%),var(--bg);color:var(--tx);font-family:Montserrat,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.6;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
-.bfbanner{background:linear-gradient(90deg,#dc143c,#ff1744,#dc143c);background-size:200% 100%;animation:bfSlide 4s linear infinite;color:#fff;text-align:center;padding:9px 14px;font-size:13px;font-weight:600;letter-spacing:.3px}
-.bfbanner a{color:#fff;text-decoration:underline;margin-left:4px;font-weight:800}
-.bfbanner .kw{color:#ffd700;font-weight:800;font-size:14px}
-.bfpulse{display:inline-block;animation:bfPulse 1s ease-in-out infinite}
-@keyframes bfSlide{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-@keyframes bfPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
-header{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:rgba(7,7,12,.78);border-bottom:1px solid var(--line)}
-header .in{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;gap:10px}
-.logo-text{font-family:Montserrat,sans-serif;font-weight:800;font-size:24px;letter-spacing:-.8px;color:var(--tx);text-decoration:none;font-style:italic}
-.logo-text .fy{color:var(--violet2)}
-.navlinks{display:flex;gap:16px;align-items:center}
-.navlinks a{color:var(--mut);text-decoration:none;font-size:14px;white-space:nowrap}
-.navlinks a:hover{color:var(--tx)}
-.authbtns{display:flex;gap:8px;align-items:center;flex-shrink:0}
-.btn{background:linear-gradient(135deg,var(--violet2),var(--violet));color:#fff;border:0;border-radius:9px;padding:9px 16px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;white-space:nowrap;text-decoration:none;display:inline-block;box-shadow:0 4px 14px rgba(91,45,224,.25);transition:transform .15s ease,filter .2s ease}
-.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
-.btn:active{transform:translateY(0) scale(.97)}
-.btn.ghost{background:transparent;color:var(--violet2);border:1px solid var(--violet);box-shadow:none}
-.btn.google{background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-shadow:none}
-.btn.shine{position:relative;overflow:hidden}
-.btn.shine::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:shineSweep 2.8s ease-in-out infinite}
-@keyframes shineSweep{0%{left:-60%}50%{left:120%}100%{left:120%}}
-.kw{color:var(--gold);font-weight:700}
-.hero{text-align:center;padding:50px 0 24px}
-.hero h1{font-size:clamp(26px,5vw,50px);margin:.2em 0;line-height:1.14;letter-spacing:-.5px}
-.hero h1 span{color:var(--violet2)}
-.hero p{color:var(--mut);max-width:560px;margin:0 auto 10px;font-size:15.5px}
-.bfhero{color:#ff6b6b;font-weight:700;font-size:14px;margin:10px 0 20px}
-.ctaRow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:28px 0}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 20px;transition:transform .2s ease}
-.stat:hover{transform:translateY(-3px)}
-.stat b{display:block;color:var(--violet2);font-size:23px}
-.trustRow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:18px 0 0;color:var(--mut);font-size:13px}
-.trustRow span{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:7px 15px}
-.miniavs{display:flex;justify-content:center;margin-top:16px}
-.miniav{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--bg);margin-left:-10px;transition:transform .2s ease}
-.miniav:first-child{margin-left:0}
-.miniav:hover{transform:translateY(-3px) scale(1.08);z-index:2}
-h2.sec{text-align:center;font-size:27px;margin:68px 0 10px;letter-spacing:-.3px}
-p.secsub{text-align:center;color:var(--mut);max-width:540px;margin:0 auto 28px;font-size:14.5px}
-.stepsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.stepcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;text-align:center;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
-.stepcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(91,45,224,.18);border-color:var(--violet)}
-.stepn{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;margin:0 auto 12px}
-.stepcard h3{margin:0 0 8px;font-size:16px}
-.stepcard p{color:var(--mut);font-size:13.5px;margin:0}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
-.dcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
-.dcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(91,45,224,.18);border-color:var(--violet)}
-.dcard .demoji{font-size:28px;margin-bottom:8px}
-.dcard h3{margin:0 0 10px}
-.dcard ul{color:var(--mut);padding-left:18px;margin:0}
-.dcard ul li{margin-bottom:8px}
-.bar{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 14px}
-input,select,textarea{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14px;max-width:100%}
-.bar input{flex:1;min-width:180px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:9px;position:relative;overflow:hidden;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
-.card:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(91,45,224,.18);border-color:var(--violet)}
-.card.locked .cover,.card.locked h3,.card.locked .meta{filter:blur(5px);user-select:none}
-.lockover{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(7,7,12,.4);color:var(--tx);font-size:13px;font-weight:700;z-index:2;text-align:center;padding:10px}
-.blurnote{filter:blur(4px);user-select:none}
-.cover{height:88px;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
-.card h3{margin:0;font-size:15.5px}
-.tag{display:inline-block;font-size:11px;border:1px solid var(--line);color:var(--mut);border-radius:20px;padding:3px 10px;margin:2px 4px 0 0}
-.tag.st{color:var(--ok);border-color:var(--ok)}
-.meta{color:var(--mut);font-size:13px}
-.gatebox{text-align:center;color:var(--mut);margin:18px 0 0;font-size:14px}
-.price{position:relative;margin:30px auto 0;max-width:460px;background:var(--card);border:2px solid var(--bf);border-radius:20px;padding:30px;text-align:center;box-shadow:0 10px 50px rgba(220,20,60,.22);transition:transform .25s ease}
-.price:hover{transform:translateY(-3px)}
-.price::before{content:"⭐ Más elegido";position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--violet2),var(--violet));color:#fff;font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;box-shadow:0 6px 16px rgba(91,45,224,.4)}
-.bftag{display:inline-block;background:linear-gradient(90deg,#dc143c,#ff1744);color:#fff;font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px;margin-bottom:10px;letter-spacing:.5px;animation:bfPulse2 2s ease-in-out infinite}
-@keyframes bfPulse2{0%,100%{box-shadow:0 0 0 rgba(255,23,68,0)}50%{box-shadow:0 0 20px rgba(255,23,68,.6)}}
-.oldprice{text-decoration:line-through;color:var(--mut);font-size:22px;display:block;margin-bottom:4px}
-.price .n{font-size:42px;color:var(--violet2);font-weight:800;animation:pulseGlow 2.4s ease-in-out infinite}
-@keyframes pulseGlow{0%,100%{text-shadow:0 0 0 rgba(130,87,240,0)}50%{text-shadow:0 0 18px rgba(130,87,240,.5)}}
-.price ul{list-style:none;padding:0;margin:16px auto;max-width:340px;text-align:left}
-.price li{margin-bottom:7px}
-.price li:before{content:"✓ ";color:var(--ok);font-weight:700}
-.urgency{background:linear-gradient(135deg,rgba(220,20,60,.15),rgba(255,23,68,.08));border:1px solid #dc143c;border-radius:12px;padding:12px 14px;margin:14px 0;text-align:center;color:#ff6b6b;font-size:13px;font-weight:600}
-.urgency .count{color:#ffd700;font-weight:800}
-.guarantee{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--ok);border-radius:12px;padding:12px 14px;margin:14px 0;font-size:12.5px;color:var(--mut);text-align:left}
-.guarantee .gicon{font-size:24px;flex-shrink:0}
-.minirevs{margin:16px 0 6px;text-align:left}
-.minirev{background:rgba(130,87,240,.06);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:12.5px;color:var(--mut)}
-.minirev .stars{color:#ffd700;font-size:12px;letter-spacing:1px}
-.minirev b{color:var(--tx);display:block;font-size:13px;margin:2px 0}
-.securebadge{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--mut);font-size:12px;margin-top:14px}
-.affiliate{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center}
-.affiliate ul{padding-left:18px;color:var(--mut)}
-.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
-.tcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
-.tcard:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(91,45,224,.18);border-color:var(--violet)}
-.tcard p{color:var(--tx);font-size:14px}
-.tcard b{display:block;margin-top:10px}
-.tcard span{color:var(--mut);font-size:12px}
-.tavatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:16px;margin-bottom:8px}
-.faqwrap{max-width:720px;margin:0 auto}
-.facc{border-bottom:1px solid var(--line)}
-.fq{width:100%;background:none;border:0;color:var(--tx);text-align:left;padding:16px 0;font-size:14.5px;font-weight:600;display:flex;justify-content:space-between;cursor:pointer;font-family:inherit;gap:10px;transition:color .2s ease}
-.fq:hover{color:var(--violet2)}
-.fq span{color:var(--violet2);flex-shrink:0}
-.fa{max-height:0;overflow:hidden;transition:max-height .25s ease}
-.fa p{color:var(--mut);font-size:13.5px;margin:0 0 16px}
-.facc.open .fa{max-height:280px}
-.facc.open .fq span{transform:rotate(45deg);display:inline-block}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}
-.modal.on{display:flex}
-.modalcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;max-width:360px;width:100%}
-.modalcard input{width:100%;margin-bottom:10px}
-.modalcard .tabs{display:flex;gap:8px;margin-bottom:14px}
-.modalcard .tabs button{flex:1;background:none;border:1px solid var(--line);color:var(--mut);padding:8px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px}
-.modalcard .tabs button.on{background:var(--violet);color:#fff;border-color:var(--violet)}
-.divider{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:12px;margin:12px 0}
-.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
-.note{font-size:11.5px;color:var(--mut)}
-.err{color:#ff6b6b;font-size:12px;min-height:14px;margin:-4px 0 6px}
-.soon{display:inline-block;background:linear-gradient(135deg,var(--gold),#d9b85c);color:#1a1a1a;font-size:10px;font-weight:800;border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:middle;animation:soonBlink 2.5s ease-in-out infinite}
-@keyframes soonBlink{0%,100%{opacity:1}50%{opacity:.6}}
-.modelbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;max-width:640px;position:relative;margin:0 auto}
-.modelbox .mcontent{filter:blur(6px);pointer-events:none;user-select:none}
-.mlockover{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;background:rgba(7,7,12,.5);border-radius:18px;z-index:3;text-align:center;padding:20px}
-.modelbox .row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.modelbox select,.modelbox input{flex:1;min-width:160px}
-footer{text-align:center;color:var(--mut);padding:40px 0 50px;border-top:1px solid var(--line);margin-top:60px;font-size:12px}
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.hero{animation:heroIn .7s ease both}
-@keyframes heroIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:720px){
-  .affiliate{grid-template-columns:1fr}
-  header .in{padding:8px 12px;flex-wrap:wrap;row-gap:6px}
-  .logo{order:1}.authbtns{order:2}
-  .navlinks{order:3;width:100%;justify-content:center;gap:12px;font-size:11.5px;padding-top:4px;border-top:1px solid var(--line);flex-wrap:wrap}
-  .logo-text{font-size:19px}
-  .btn{padding:7px 10px;font-size:12px}
-  .hero{padding:32px 0 10px}
-  h2.sec{font-size:21px;margin:46px 0 8px}
-  .stepsgrid{grid-template-columns:1fr}
-  .bfbanner{font-size:12px}
-}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,Montserrat,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);overflow-x:hidden}
+.hidden{display:none!important}
 
-.gatewrap{max-width:460px;margin:60px auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px;text-align:center}
-.dashboard{display:flex;gap:22px;align-items:flex-start;padding:30px 0 60px}
-.sidebar{width:220px;flex-shrink:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;position:sticky;top:92px}
-.sidebar button{width:100%;text-align:left;background:none;border:0;color:var(--mut);padding:11px 12px;border-radius:9px;cursor:pointer;font-family:inherit;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;transition:background .2s ease,color .2s ease}
-.sidebar button:hover:not(.active){background:rgba(130,87,240,.1);color:var(--tx)}
-.sidebar button.active{background:linear-gradient(135deg,var(--violet2),var(--violet));color:#fff}
-.sidebar .userbox{display:flex;align-items:center;gap:10px;padding:12px 10px;border-bottom:1px solid var(--line);margin-bottom:10px}
-.sidebar .uava{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0;background-size:cover;background-position:center}
-.sidebar .uname{font-size:13px;color:var(--tx);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.panelmain{flex:1;min-width:0}
-.panelview{display:none}
-.panelview.active{display:block}
-.adminform{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
-.adminform textarea{grid-column:1/-1;background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14px}
-.offrow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px}
-.offrow .del{background:none;border:1px solid #ff6b6b;color:#ff6b6b;border-radius:8px;padding:6px 10px;cursor:pointer;font-family:inherit;font-size:12px}
-.badge-admin{background:var(--gold);color:#1a1a1a;font-size:10px;font-weight:800;border-radius:6px;padding:3px 8px;margin-left:6px}
-.empty{color:var(--mut);text-align:center;padding:40px 0;font-size:14px}
-.debugbox{background:#2a1010;border:1px solid #ff6b6b;border-radius:10px;padding:12px 14px;margin:16px 0;font-size:12px;color:#ffb0b0;white-space:pre-wrap}
-.okbox{background:rgba(61,220,151,.1);border:1px solid var(--ok);border-radius:10px;padding:12px 14px;margin:16px 0;font-size:12px;color:var(--ok)}
-.profcard{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:20px}
-.profava{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:#fff;flex-shrink:0;background-size:cover;background-position:center;cursor:pointer;border:3px solid transparent;transition:border-color .2s ease}
-.profava:hover{border-color:var(--violet2)}
-.profava input{display:none}
-.proffields label{display:block;font-size:12px;color:var(--mut);margin-bottom:4px;margin-top:10px}
-.proffields input{width:100%}
-.skel{background:linear-gradient(90deg,var(--card) 25%,#1a1730 37%,var(--card) 63%);background-size:400% 100%;animation:skel 1.4s ease infinite;border-radius:14px;height:150px}
-@keyframes skel{0%{background-position:100% 50%}100%{background-position:0 50%}}
-.card{animation:cardIn .4s ease both}
+/* ---------- Layout global tipo Empify ---------- */
+.applayout{display:flex;min-height:100vh}
+.sidebar{width:260px;flex-shrink:0;background:#0d0d18;border-right:1px solid var(--line);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:30;transition:transform .25s ease}
+.sidebar .brand{display:flex;align-items:center;gap:12px;padding:22px 20px 18px;border-bottom:1px solid var(--line)}
+.brand-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#fff;font-style:italic}
+.brand-text{display:flex;flex-direction:column;line-height:1.1}
+.brand-text .name{font-size:19px;font-weight:800;font-style:italic;letter-spacing:-.5px}
+.brand-text .name .fy{color:var(--violet2)}
+.brand-text .tag{font-size:9.5px;color:var(--mut);letter-spacing:1.5px;font-weight:700;margin-top:2px}
+.navgroup{padding:14px 12px 6px}
+.navgroup .glabel{color:var(--mut2);font-size:10.5px;letter-spacing:1.3px;font-weight:700;padding:6px 10px}
+.navitem{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:var(--mut);cursor:pointer;font-size:14px;font-weight:500;margin-bottom:2px;border:0;background:none;width:100%;text-align:left;font-family:inherit;transition:background .18s,color .18s}
+.navitem:hover{background:var(--violetlight);color:var(--tx)}
+.navitem.active{background:linear-gradient(135deg,rgba(130,87,240,.25),rgba(91,45,224,.15));color:#fff}
+.navitem.active .iconbox{background:linear-gradient(135deg,var(--violet2),var(--violet));color:#fff}
+.navitem .iconbox{width:28px;height:28px;border-radius:7px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:background .18s}
+.navitem .pill{margin-left:auto;background:var(--violet);color:#fff;font-size:9.5px;padding:2px 7px;border-radius:5px;font-weight:800;letter-spacing:.5px}
+.navitem .pill.gold{background:var(--gold);color:#1a1a1a}
+.sidefooter{margin-top:auto;padding:14px 12px;border-top:1px solid var(--line)}
+.sideuser{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;transition:background .2s;cursor:pointer}
+.sideuser:hover{background:var(--violetlight)}
+.sideuser .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;flex-shrink:0;background-size:cover;background-position:center}
+.sideuser .info{min-width:0;flex:1}
+.sideuser .uname{font-size:13px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sideuser .urole{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logout{background:none;border:0;color:var(--mut);cursor:pointer;padding:6px;border-radius:7px;transition:color .2s,background .2s;font-size:16px}
+.logout:hover{color:#ff6b6b;background:rgba(255,107,107,.08)}
+.gotoland{display:block;margin:6px 10px 0;color:var(--mut);font-size:11px;text-decoration:none;text-align:center;padding:6px;border-radius:6px;transition:color .2s}
+.gotoland:hover{color:var(--violet2)}
+
+/* ---------- Main area ---------- */
+.main{margin-left:260px;flex:1;min-width:0;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--line);background:rgba(10,10,18,.8);backdrop-filter:blur(10px);position:sticky;top:0;z-index:20;gap:12px}
+.topbar h1{margin:0;font-size:20px;font-weight:700;letter-spacing:-.3px}
+.topbar .sub{color:var(--mut);font-size:13px;margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar-chip{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12.5px;color:var(--mut);font-weight:600}
+.topbar-chip .star{color:var(--violet2)}
+.topbar .bell{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mut);transition:all .2s}
+.topbar .bell:hover{color:var(--violet2);border-color:var(--violet)}
+.menubtn{display:none;background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:9px;padding:8px 10px;cursor:pointer;font-size:16px}
+.content{padding:28px 32px 60px;max-width:1200px}
+
+/* ---------- Section views ---------- */
+.view{display:none;animation:fadeIn .35s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.sectitle{font-size:14px;letter-spacing:2px;color:var(--mut2);font-weight:700;margin:0 0 10px}
+.secheader h2{margin:0 0 6px;font-size:28px;font-weight:800;letter-spacing:-.5px}
+.secheader p{color:var(--mut);margin:0 0 24px;font-size:14px}
+
+/* ---------- Cards generic ---------- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;transition:transform .22s ease,border-color .22s,box-shadow .22s}
+.panel:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.3);border-color:#2f2f48}
+.greet{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.greet h2{margin:0;font-size:30px;font-weight:800;letter-spacing:-.6px}
+.greet p{color:var(--mut);margin:4px 0 0;font-size:13.5px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.btn{background:linear-gradient(135deg,var(--violet2),var(--violet));color:#fff;border:0;border-radius:10px;padding:11px 20px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13.5px;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(91,45,224,.3);transition:transform .18s,filter .18s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 10px 24px rgba(91,45,224,.4)}
+.btn:active{transform:translateY(0) scale(.97)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--violet2);border:1px solid var(--violet);box-shadow:none}
+.btn.ghost:hover{background:var(--violetlight)}
+.btn.sm{padding:8px 14px;font-size:12.5px}
+.btn.shine{position:relative;overflow:hidden}
+.btn.shine::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:shineSweep 3s ease-in-out infinite;pointer-events:none}
+@keyframes shineSweep{0%{left:-60%}50%{left:120%}100%{left:120%}}
+.btn.danger-ghost{background:none;border:1px solid #ff6b6b;color:#ff6b6b;box-shadow:none}
+.btn.danger-ghost:hover{background:rgba(255,107,107,.08)}
+
+/* ---------- Hero banner tipo "Enterate" ---------- */
+.herobanner{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(130,87,240,.14),rgba(91,45,224,.05));border:1px solid rgba(130,87,240,.3);border-radius:16px;padding:18px 22px;margin-bottom:22px}
+.herobanner .ic{width:46px;height:46px;border-radius:11px;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.herobanner .ht{flex:1;min-width:0}
+.herobanner h3{margin:0 0 2px;font-size:15px;font-weight:700}
+.herobanner p{margin:0;color:var(--mut);font-size:13px}
+.herobanner .act{display:flex;gap:8px;align-items:center;flex-shrink:0}
+
+/* ---------- Stats cards ---------- */
+.statsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:22px}
+.statcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;transition:transform .22s ease,border-color .22s}
+.statcard:hover{transform:translateY(-3px);border-color:var(--violet)}
+.statcard .lbl{color:var(--mut);font-size:12px;letter-spacing:.3px;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.statcard .lbl .ic{width:26px;height:26px;border-radius:7px;background:var(--violetlight);display:flex;align-items:center;justify-content:center;color:var(--violet2);font-size:13px}
+.statcard .val{font-size:28px;font-weight:800;letter-spacing:-.5px;color:var(--tx)}
+.statcard .delta{color:var(--ok);font-size:11.5px;margin-top:4px;font-weight:600}
+
+/* ---------- Biblioteca ---------- */
+.filterrow{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 20px}
+input,select,textarea{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:13.5px;max-width:100%;transition:border-color .18s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--violet)}
+.filterrow input{flex:1;min-width:200px}
+.offersgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.ocard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;transition:transform .22s,border-color .22s,box-shadow .22s;animation:cardIn .4s ease both}
+.ocard:hover{transform:translateY(-4px);border-color:var(--violet);box-shadow:0 16px 36px rgba(91,45,224,.18)}
 @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:720px){
-  .dashboard{flex-direction:column;padding:16px 0 40px}
-  .sidebar{width:100%;position:static}
-  .sidebar .userbox{display:none}
-  .sidebar{display:flex;gap:6px;overflow-x:auto;padding:8px}
-  .sidebar button{flex:1;white-space:nowrap;justify-content:center;font-size:12px;padding:9px 6px}
+.ocard .cover{height:100px;border-radius:10px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:linear-gradient(135deg,rgba(130,87,240,.15),rgba(91,45,224,.05));font-size:40px}
+.ocard h3{margin:0;font-size:15px;font-weight:700}
+.tagrow{display:flex;flex-wrap:wrap;gap:5px}
+.tag{display:inline-block;font-size:10.5px;border:1px solid var(--line);color:var(--mut);border-radius:999px;padding:3px 10px;font-weight:600}
+.tag.st{color:var(--ok);border-color:var(--ok);background:rgba(61,220,151,.08)}
+.tag.hot{color:#ffc1c1;border-color:var(--bf);background:rgba(220,20,60,.1)}
+.tag.new{color:var(--gold);border-color:var(--gold);background:rgba(245,230,168,.08)}
+.ocard .meta{color:var(--mut);font-size:12.5px}
+.ocard .act{display:flex;gap:8px;margin-top:4px}
+.ocard .act a{flex:1;text-align:center;padding:8px 10px;border-radius:8px;background:var(--violetlight);color:var(--violet2);text-decoration:none;font-size:12px;font-weight:600;transition:background .18s}
+.ocard .act a:hover{background:rgba(130,87,240,.25)}
+.empty{text-align:center;padding:60px 20px;color:var(--mut);font-size:14px;background:var(--card);border:1px dashed var(--line);border-radius:16px}
+.empty .ic{font-size:38px;margin-bottom:12px}
+.empty b{color:var(--tx);display:block;margin-bottom:6px;font-size:16px}
+.skel{background:linear-gradient(90deg,var(--card) 25%,#1a1a2e 37%,var(--card) 63%);background-size:400% 100%;animation:skel 1.4s ease infinite;border-radius:14px;height:200px}
+@keyframes skel{0%{background-position:100% 50%}100%{background-position:0 50%}}
+
+/* ---------- Admin form ---------- */
+.adminbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px}
+.adminform{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px}
+.adminform .full{grid-column:1/-1}
+.adminform label{display:block;font-size:11px;color:var(--mut);font-weight:600;letter-spacing:.3px;margin-bottom:5px;text-transform:uppercase}
+.adminform input,.adminform select,.adminform textarea{width:100%}
+.adminform textarea{resize:vertical;min-height:70px;font-family:inherit}
+.offrow{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 15px;margin-bottom:8px;transition:border-color .18s}
+.offrow:hover{border-color:var(--violet)}
+.offrow .info{flex:1;min-width:0}
+.offrow .info b{font-size:14px;display:block}
+.offrow .info span{font-size:11.5px;color:var(--mut)}
+.err{color:#ff6b6b;font-size:12px;min-height:14px;margin-top:8px}
+.ok{color:var(--ok);font-size:12px;min-height:14px;margin-top:8px}
+
+/* ---------- Perfil ---------- */
+.profcard{display:flex;align-items:flex-start;gap:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;margin-bottom:18px;flex-wrap:wrap}
+.profava{width:94px;height:94px;border-radius:50%;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:36px;color:#fff;flex-shrink:0;background-size:cover;background-position:center;cursor:pointer;border:3px solid transparent;transition:border-color .22s,transform .2s;position:relative}
+.profava:hover{border-color:var(--violet2);transform:scale(1.03)}
+.profava::after{content:"📷";position:absolute;bottom:-4px;right:-4px;width:30px;height:30px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;font-size:14px;border:3px solid var(--bg)}
+.profava input{display:none}
+.proffields{flex:1;min-width:260px}
+.proffields label{display:block;font-size:11px;color:var(--mut);margin-bottom:5px;margin-top:12px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+.proffields label:first-child{margin-top:0}
+.proffields input{width:100%}
+
+/* ---------- Debug box ---------- */
+.debugbox{background:rgba(255,107,107,.08);border:1px solid #ff6b6b;border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:12.5px;color:#ffb0b0;line-height:1.55}
+.debugbox b{color:#ff6b6b}
+.okbox{background:rgba(61,220,151,.08);border:1px solid var(--ok);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:12.5px;color:var(--ok)}
+
+/* ---------- Gate pago ---------- */
+.gatewrap{max-width:500px;margin:60px auto;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:36px 32px;text-align:center}
+.gatewrap .ic{font-size:48px;margin-bottom:12px}
+.gatewrap h2{margin:0 0 8px;font-size:24px;letter-spacing:-.4px}
+.gatewrap p{color:var(--mut);font-size:14px;margin:0 0 18px}
+.bftag{display:inline-block;background:linear-gradient(90deg,#dc143c,#ff1744);color:#fff;font-size:11px;font-weight:800;padding:5px 14px;border-radius:20px;margin:14px 0;letter-spacing:.5px}
+
+/* ---------- Partners ---------- */
+.partnerinfo{background:linear-gradient(135deg,rgba(130,87,240,.1),rgba(91,45,224,.03));border:1px solid var(--line);border-radius:16px;padding:28px;display:grid;grid-template-columns:1fr 180px;gap:28px;align-items:center;margin-bottom:22px}
+.partnerinfo h3{margin:0 0 10px;font-size:20px;letter-spacing:-.3px}
+.partnerinfo p{color:var(--mut);font-size:13.5px;margin:0 0 14px}
+.partnerinfo .kw{color:var(--gold);font-weight:700}
+.partnerinfo ul{list-style:none;padding:0;margin:0 0 16px;color:var(--mut);font-size:13px}
+.partnerinfo ul li{padding:5px 0;display:flex;gap:8px;align-items:center}
+.partnerinfo ul li::before{content:"✓";color:var(--ok);font-weight:800}
+.partnerstats{display:flex;flex-direction:column;gap:10px}
+.partnerstat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.partnerstat b{display:block;font-size:26px;color:var(--violet2);font-weight:800}
+.partnerstat span{font-size:11px;color:var(--mut)}
+
+/* ---------- Modales ---------- */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:60;padding:18px}
+.modal.on{display:flex;animation:fadeIn .2s ease}
+.modalcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;animation:modalIn .3s cubic-bezier(.21,1.02,.73,1)}
+@keyframes modalIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modalcard h3{margin:0 0 10px;font-size:18px}
+.modalcard input,.modalcard textarea{width:100%;margin-bottom:10px}
+.modalcard textarea{resize:vertical;min-height:70px;font-family:inherit}
+.note{font-size:11.5px;color:var(--mut)}
+.closeX{float:right;background:none;border:0;color:var(--mut);font-size:22px;cursor:pointer;line-height:1}
+
+/* ---------- Mobile ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:25;display:none}
+.backdrop.on{display:block}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.on{transform:translateX(0);box-shadow:0 0 40px rgba(0,0,0,.5)}
+  .main{margin-left:0}
+  .menubtn{display:flex;align-items:center;justify-content:center}
+  .topbar{padding:14px 18px}
+  .content{padding:20px 18px 50px}
+  .partnerinfo{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+  .greet h2{font-size:22px}
+  .secheader h2{font-size:22px}
+  .herobanner{flex-wrap:wrap}
+  .herobanner .act{width:100%}
 }
 </style>
 </head>
 <body>
-<header><div class="in">
-  <a href="index.html" class="logo-text">Sp<span class="fy">fy</span></a>
-  <div class="navlinks"></div>
-  <div class="authbtns" id="authbtns"></div>
-</div></header>
 
-<div class="wrap" id="appwrap" style="display:none">
-  <div id="debugArea"></div>
-
-  <div class="gatewrap" id="payGate" style="display:none">
-    <span style="font-size:30px">🔒</span>
-    <h2 style="margin:10px 0 6px">Activá tu Plan Pro</h2>
-    <p class="note" style="font-size:13px">Tu cuenta está creada, pero todavía no tenés el Plan Pro activo.</p>
-    <div class="bftag" style="margin:14px 0">🔥 Black Friday · 40% OFF</div>
-    <a class="btn shine" href="index.html#plan" style="margin-top:4px;display:inline-block">Suscribirme con 40% OFF</a>
-  </div>
-
-  <div class="dashboard" id="dash" style="display:none">
-    <div class="sidebar">
-      <div class="userbox">
-        <div class="uava" id="sideAva">?</div>
-        <div class="uname" id="sideName">...</div>
+<div class="applayout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">S</div>
+      <div class="brand-text">
+        <div class="name">Sp<span class="fy">fy</span></div>
+        <div class="tag">BIBLIOTECA PRO</div>
       </div>
-      <button class="active" id="navBiblioteca">📚 Biblioteca</button>
-      <button id="navModelador">🛠️ Modelador <span class="soon" style="margin-left:auto">SOON</span></button>
-      <button id="navPerfil">👤 Perfil</button>
-      <button id="navPartners">🤝 Partners</button>
-      <button id="navAdmin" style="display:none">⚙️ Admin <span class="badge-admin">Solo vos</span></button>
     </div>
-    <div class="panelmain">
-      <div class="panelview active" id="viewBiblioteca">
-        <h2 class="sec" style="margin-top:0;text-align:left">Tu biblioteca de ofertas</h2>
-        <div class="bar">
-          <input id="q" placeholder="Buscar oferta o nicho...">
+
+    <div class="navgroup">
+      <div class="glabel">PANEL</div>
+      <button class="navitem active" data-view="Inicio"><span class="iconbox">🏠</span>Inicio</button>
+      <button class="navitem" data-view="Biblioteca"><span class="iconbox">📚</span>Biblioteca</button>
+      <button class="navitem" data-view="Modelador"><span class="iconbox">🛠</span>Modelador<span class="pill gold">SOON</span></button>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel">PROGRAMA</div>
+      <button class="navitem" data-view="Partners"><span class="iconbox">🤝</span>Partners</button>
+    </div>
+
+    <div class="navgroup">
+      <div class="glabel">CUENTA</div>
+      <button class="navitem" data-view="Perfil"><span class="iconbox">👤</span>Perfil</button>
+      <button class="navitem hidden" data-view="Admin" id="navAdminBtn"><span class="iconbox">⚙️</span>Admin<span class="pill">SOLO VOS</span></button>
+    </div>
+
+    <div class="sidefooter">
+      <div class="sideuser">
+        <div class="avatar" id="sideAva">?</div>
+        <div class="info">
+          <div class="uname" id="sideName">...</div>
+          <div class="urole" id="sideRole">Plan Pro</div>
+        </div>
+        <button class="logout" id="logoutBtn" title="Cerrar sesión">↩</button>
+      </div>
+      <a href="index.html" class="gotoland">Ir a la página principal</a>
+    </div>
+  </aside>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="menubtn" id="menuBtn">☰</button>
+        <div>
+          <h1 id="topTitle">Inicio</h1>
+          <div class="sub" id="topSub">Tu panel de control</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-chip"><span class="star">★</span><span id="statusChip">Plan Pro activo</span></div>
+      </div>
+    </div>
+
+    <div class="content" id="content">
+      <div id="debugArea"></div>
+
+      <!-- Gate de pago -->
+      <div class="gatewrap hidden" id="payGate">
+        <div class="ic">🔒</div>
+        <h2>Activá tu Plan Pro</h2>
+        <p>Tu cuenta está creada, pero todavía no tenés el Plan Pro activo.</p>
+        <div class="bftag">🔥 BLACK FRIDAY · 40% OFF</div>
+        <br>
+        <a class="btn shine" href="index.html#plan">Suscribirme con 40% OFF</a>
+      </div>
+
+      <!-- ============ INICIO ============ -->
+      <div class="view active" id="viewInicio">
+        <div class="herobanner">
+          <div class="ic">⚡</div>
+          <div class="ht">
+            <h3>Novedades de la semana</h3>
+            <p>Ya se sumaron nuevas ofertas a tu biblioteca. Entrá a verlas.</p>
+          </div>
+          <div class="act">
+            <button class="btn sm" onclick="setView('Biblioteca')">Ver biblioteca →</button>
+          </div>
+        </div>
+
+        <div class="greet">
+          <div>
+            <h2 id="helloName">Hola 👋</h2>
+            <p>Esto es lo que tenés disponible hoy en Spify.</p>
+          </div>
+          <div class="btnrow">
+            <button class="btn shine" onclick="setView('Biblioteca')">📚 Explorar ofertas</button>
+            <button class="btn ghost" onclick="setView('Partners')">🤝 Ser partner</button>
+          </div>
+        </div>
+
+        <div class="statsgrid">
+          <div class="statcard">
+            <div class="lbl"><span class="ic">📚</span>Ofertas en biblioteca</div>
+            <div class="val" id="statTotal">—</div>
+            <div class="delta" id="statDelta">Actualizadas hoy</div>
+          </div>
+          <div class="statcard">
+            <div class="lbl"><span class="ic">🔥</span>Escalando ahora</div>
+            <div class="val" id="statHot">—</div>
+            <div class="delta">Con tracción real</div>
+          </div>
+          <div class="statcard">
+            <div class="lbl"><span class="ic">💰</span>Tu comisión partner</div>
+            <div class="val">20%</div>
+            <div class="delta">Recurrente mensual</div>
+          </div>
+          <div class="statcard">
+            <div class="lbl"><span class="ic">🎯</span>Nicho top</div>
+            <div class="val" id="statNiche" style="font-size:18px">—</div>
+            <div class="delta">Más demanda esta semana</div>
+          </div>
+        </div>
+
+        <div class="secheader" style="margin-top:30px">
+          <h2>Últimas ofertas agregadas</h2>
+          <p>Las 3 más recientes de tu biblioteca.</p>
+        </div>
+        <div class="offersgrid" id="latestGrid"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+      </div>
+
+      <!-- ============ BIBLIOTECA ============ -->
+      <div class="view" id="viewBiblioteca">
+        <div class="secheader">
+          <div class="sectitle">BIBLIOTECA</div>
+          <h2>Todas las ofertas escaladas</h2>
+          <p>Ofertas investigadas y subidas a mano con datos reales de Meta Ads Library.</p>
+        </div>
+        <div class="filterrow">
+          <input id="q" placeholder="🔎 Buscar por nombre o nicho...">
           <select id="ft"><option value="">Todos los tipos</option><option>Ebook</option><option>Curso</option><option>Plantillas</option><option>Membresía</option><option>Software</option></select>
           <select id="fs"><option value="">Todos los estados</option><option>Escalando</option><option>Escalada</option><option>Nueva</option></select>
+          <select id="fc"><option value="">Todos los países</option><option>AR</option><option>MX</option><option>ES</option><option>CO</option><option>CL</option><option>PE</option><option>US</option></select>
         </div>
-        <div class="grid" id="grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+        <div class="offersgrid" id="grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
       </div>
 
-      <div class="panelview" id="viewModelador">
-        <h2 class="sec" style="margin-top:0;text-align:left">Modelador de ofertas <span class="soon">PRÓXIMAMENTE</span></h2>
-        <div class="modelbox" style="margin:0;max-width:none">
-          <div class="mlockover">
-            <span style="font-size:30px">🚀</span>
-            <b>Próximamente</b>
-            <p class="note" style="max-width:360px">Estamos conectando la IA que analiza tiendas y te sugiere ángulos de venta + cómo subir el valor percibido. Se activa muy pronto para suscriptores Pro, sin costo adicional.</p>
+      <!-- ============ MODELADOR ============ -->
+      <div class="view" id="viewModelador">
+        <div class="secheader">
+          <div class="sectitle">PRÓXIMAMENTE</div>
+          <h2>Modelador de ofertas con IA</h2>
+          <p>Vas a poder pegar el link de una tienda o de Meta Ad Library, y una IA te sugerirá ángulos y cómo subir el valor percibido.</p>
+        </div>
+        <div class="panel" style="text-align:center;padding:50px 24px">
+          <div style="font-size:52px;margin-bottom:14px">🚀</div>
+          <h3 style="margin:0 0 8px;font-size:20px">Está en construcción</h3>
+          <p style="color:var(--mut);max-width:420px;margin:0 auto 18px;font-size:14px">Estamos conectando la IA. Se activa muy pronto para suscriptores Pro, sin costo extra.</p>
+          <button class="btn ghost" onclick="setView('Biblioteca')">Mientras tanto, explorá la biblioteca</button>
+        </div>
+      </div>
+
+      <!-- ============ PARTNERS ============ -->
+      <div class="view" id="viewPartners">
+        <div class="secheader">
+          <div class="sectitle">PROGRAMA</div>
+          <h2>Volvete partner de Spify</h2>
+          <p>Ganá <b style="color:var(--gold)">20% de comisión recurrente</b> por cada persona que se suscriba usando tu link.</p>
+        </div>
+        <div class="partnerinfo">
+          <div>
+            <h3>Ganá compartiendo Spify</h3>
+            <p>Postulate y recibí tu link único. Por cada suscriptor que llega por tu link, cobrás un <span class="kw">20%</span> todos los meses mientras siga activo.</p>
+            <ul>
+              <li>Comisión recurrente mes a mes</li>
+              <li>Panel con tus clics y conversiones</li>
+              <li>Pagos mensuales a tu cuenta</li>
+            </ul>
+            <button class="btn shine" id="applyPartnerBtn">Postularme como partner</button>
           </div>
-          <div class="mcontent">
-            <div class="row"><input placeholder="Link de la tienda" disabled></div>
-            <div class="row"><select disabled><option>Finanzas</option></select></div>
-            <button class="btn" style="width:100%">Analizar</button>
+          <div class="partnerstats">
+            <div class="partnerstat"><b>20%</b><span>comisión recurrente</span></div>
+            <div class="partnerstat"><b>24-48h</b><span>aprobación</span></div>
           </div>
         </div>
       </div>
 
-      <div class="panelview" id="viewPerfil">
-        <h2 class="sec" style="margin-top:0;text-align:left">Tu perfil</h2>
+      <!-- ============ PERFIL ============ -->
+      <div class="view" id="viewPerfil">
+        <div class="secheader">
+          <div class="sectitle">TU CUENTA</div>
+          <h2>Tu perfil</h2>
+          <p>Personalizá tu foto y tu nombre para mostrar.</p>
+        </div>
         <div class="profcard">
           <label class="profava" id="profAva" title="Hacé clic para cambiar la foto">?
             <input type="file" id="profAvaFile" accept="image/*">
           </label>
-          <div class="proffields" style="flex:1">
-            <label>Email (no se puede cambiar)</label>
+          <div class="proffields">
+            <label>Email</label>
             <input id="profEmailShow" disabled>
             <label>Nombre o apodo</label>
             <input id="profName" placeholder="¿Cómo te llamamos?">
+            <label>Rol</label>
+            <input id="profRole" disabled value="Suscriptor Plan Pro">
+            <div class="ok" id="profOk"></div>
+            <div class="err" id="profErr"></div>
           </div>
         </div>
-        <button class="btn shine" id="saveProfileBtn">Guardar cambios</button>
-        <div class="err" id="profErr"></div>
-        <p class="note" style="margin-top:16px">💡 Hacé clic sobre el círculo para subir una foto de perfil.</p>
+        <button class="btn shine" id="saveProfileBtn">💾 Guardar cambios</button>
       </div>
 
-      <div class="panelview" id="viewPartners">
-        <h2 class="sec" style="margin-top:0;text-align:left">Programa de partners</h2>
-        <div class="profcard" style="flex-direction:column;align-items:flex-start">
-          <h3 style="margin:0 0 6px">Ganá <span class="kw">20% de comisión recurrente</span></h3>
-          <p class="note" style="font-size:13px">Postulate como partner y recibí tu link único. Por cada persona que se suscribe al Plan Pro usando tu link, cobrás un 20% mientras siga activa.</p>
-          <button class="btn shine" id="applyPartnerBtn" style="margin-top:12px">Postularme como partner</button>
+      <!-- ============ ADMIN ============ -->
+      <div class="view" id="viewAdmin">
+        <div class="secheader">
+          <div class="sectitle">PANEL ADMIN</div>
+          <h2>Administración de ofertas</h2>
+          <p>Cargá acá las ofertas reales que valides en la Biblioteca de Anuncios de Meta.</p>
         </div>
-      </div>
 
-      <div class="panelview" id="viewAdmin">
-        <h2 class="sec" style="margin-top:0;text-align:left">Admin <span class="badge-admin">Solo vos</span></h2>
-        <p class="note" style="margin-bottom:16px">Cargá acá las ofertas reales que valides en la Biblioteca de Anuncios de Meta.</p>
-        <div class="modelbox" style="max-width:none;margin:0">
+        <div class="adminbox">
+          <h3 style="margin:0 0 16px;font-size:16px">➕ Agregar nueva oferta</h3>
           <form id="offerForm" class="adminform">
-            <input id="oName" placeholder="Nombre de la oferta" required>
-            <select id="oNiche"><option>Finanzas</option><option>Salud</option><option>Maternidad</option><option>Idiomas</option><option>Negocios</option><option>Nutrición</option></select>
-            <select id="oType"><option>Ebook</option><option>Curso</option><option>Plantillas</option><option>Membresía</option><option>Software</option></select>
-            <input id="oCountry" placeholder="País (ej: AR)">
-            <input id="oAds" type="number" min="0" placeholder="N° de anuncios activos">
-            <select id="oStatus"><option>Escalando</option><option>Escalada</option><option>Nueva</option></select>
-            <input id="oLink" placeholder="Link a Meta Ad Library">
-            <textarea id="oNote" rows="2" placeholder="Nota (ángulo, precio, por qué es buena)"></textarea>
+            <div>
+              <label>Nombre de la oferta</label>
+              <input id="oName" placeholder="Ej: Ebook Finanzas 101" required>
+            </div>
+            <div>
+              <label>Nicho</label>
+              <select id="oNiche"><option>Finanzas</option><option>Salud</option><option>Maternidad</option><option>Idiomas</option><option>Negocios</option><option>Nutrición</option><option>Belleza</option><option>Mascotas</option><option>Otro</option></select>
+            </div>
+            <div>
+              <label>Tipo</label>
+              <select id="oType"><option>Ebook</option><option>Curso</option><option>Plantillas</option><option>Membresía</option><option>Software</option></select>
+            </div>
+            <div>
+              <label>País</label>
+              <input id="oCountry" placeholder="AR, MX, ES...">
+            </div>
+            <div>
+              <label>N° de anuncios activos</label>
+              <input id="oAds" type="number" min="0" placeholder="Ej: 35">
+            </div>
+            <div>
+              <label>Estado</label>
+              <select id="oStatus"><option>Escalando</option><option>Escalada</option><option>Nueva</option></select>
+            </div>
+            <div class="full">
+              <label>Link a Meta Ad Library (biblioteca de anuncios)</label>
+              <input id="oLink" placeholder="https://www.facebook.com/ads/library/...">
+            </div>
+            <div class="full">
+              <label>Link a la tienda / página de venta</label>
+              <input id="oShop" placeholder="https://tienda.com...">
+            </div>
+            <div class="full">
+              <label>Nota (ángulo, precio, por qué funciona)</label>
+              <textarea id="oNote" rows="3" placeholder="Ej: Precio $19 USD, upsell a $47 con comunidad, usan testimonios de madres..."></textarea>
+            </div>
           </form>
-          <button class="btn shine" id="addOfferBtn" style="width:100%">Agregar oferta</button>
+          <button class="btn shine" id="addOfferBtn" style="width:100%">💾 Agregar oferta a la biblioteca</button>
           <div class="err" id="offerErr"></div>
+          <div class="ok" id="offerOk"></div>
         </div>
-        <h3 style="margin:28px 0 10px">Ofertas cargadas</h3>
+
+        <h3 style="margin:30px 0 14px;font-size:16px">📚 Ofertas ya cargadas</h3>
         <div id="offerList"></div>
 
-        <h3 style="margin:36px 0 10px">Postulaciones a partner</h3>
+        <h3 style="margin:36px 0 14px;font-size:16px">🤝 Postulaciones a partner</h3>
         <div id="partnerList"></div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 
+<!-- Modal partner -->
 <div class="modal" id="partnerModal">
   <div class="modalcard">
-    <h3 style="margin-top:0">Postularte como partner</h3>
-    <p class="note" style="margin-bottom:12px">Ganá <span class="kw">20%</span> de comisión recurrente.</p>
+    <button class="closeX" onclick="document.getElementById('partnerModal').classList.remove('on')">×</button>
+    <h3>Postularte como partner</h3>
+    <p class="note" style="margin-bottom:14px">Ganá <b style="color:var(--gold)">20%</b> de comisión recurrente.</p>
     <form id="partnerForm">
       <input id="pName" placeholder="Nombre completo" required>
       <input id="pEmail" type="email" placeholder="Email" required>
       <input id="pSocial" placeholder="Instagram / TikTok / web (link)">
-      <input id="pAudience" placeholder="Cuántos seguidores / alcance tenés aprox.">
-      <textarea id="pMessage" rows="3" placeholder="Contanos cómo pensás promocionar Spify" style="width:100%;background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14px;margin-bottom:10px"></textarea>
+      <input id="pAudience" placeholder="Seguidores / alcance aprox.">
+      <textarea id="pMessage" rows="3" placeholder="¿Cómo vas a promocionar Spify?"></textarea>
       <div class="err" id="partnerErr"></div>
       <button class="btn shine" style="width:100%" type="submit">Enviar postulación</button>
     </form>
-    <button class="btn ghost" style="width:100%;margin-top:8px" onclick="document.getElementById('partnerModal').classList.remove('on')">Cerrar</button>
   </div>
 </div>
 
-<footer><span class="logo-text" style="font-size:16px">Sp<span class="fy">fy</span></span></footer>
-
 <script>
-window.addEventListener('load', async function(){
-  const sb = window.supabase.createClient("https://lirvbjfnjrvdmshjrrbl.supabase.co", "sb_publishable_7SKC71LJHEF1AsfyQhyFRQ_h7xe-sXK");
-  const $=id=>document.getElementById(id);
-  let offersData = [], isAdmin = false;
+const SB_URL = "https://lirvbjfnjrvdmshjrrbl.supabase.co", SB_ANON = "sb_publishable_7SKC71LJHEF1AsfyQhyFRQ_h7xe-sXK";
+let sb, offersData=[], isAdmin=false, session=null, profile=null;
+const $=id=>document.getElementById(id);
+const $$=sel=>document.querySelectorAll(sel);
 
-  function showDebug(msg){
-    const existing = $("debugArea").innerHTML;
-    $("debugArea").innerHTML = existing + '<div class="debugbox">⚠️ ' + msg + '</div>';
-  }
+function showDebug(msg,isOk){
+  const cls = isOk?'okbox':'debugbox';
+  const icon = isOk?'✓':'⚠️';
+  $("debugArea").innerHTML += `<div class="${cls}">${icon} ${msg}</div>`;
+}
+function clearDebug(){$("debugArea").innerHTML="";}
 
-  const { data:{ session }, error: sessErr } = await sb.auth.getSession();
+// ---------- Navegación tipo SPA ----------
+const titles = {
+  Inicio:["Inicio","Tu panel de control"],
+  Biblioteca:["Biblioteca","Ofertas escaladas investigadas a mano"],
+  Modelador:["Modelador","Próximamente con IA"],
+  Partners:["Partners","Ganá compartiendo Spify"],
+  Perfil:["Mi perfil","Personalizá tu cuenta"],
+  Admin:["Administración","Panel exclusivo para vos"]
+};
+function setView(v){
+  $$('.view').forEach(x=>x.classList.remove('active'));
+  const view = $('view'+v); if(view) view.classList.add('active');
+  $$('.navitem').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  const [t,s] = titles[v]||[v,""];
+  $("topTitle").textContent=t; $("topSub").textContent=s;
+  if(window.innerWidth<=900){ $("sidebar").classList.remove('on'); $("backdrop").classList.remove('on'); }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+window.setView = setView;
+$$('.navitem').forEach(b=>b.addEventListener('click', ()=>setView(b.dataset.view)));
+
+// Mobile menu
+$("menuBtn").onclick=()=>{ $("sidebar").classList.add('on'); $("backdrop").classList.add('on'); };
+$("backdrop").onclick=()=>{ $("sidebar").classList.remove('on'); $("backdrop").classList.remove('on'); };
+
+// ---------- Init ----------
+window.addEventListener('load', async ()=>{
+  sb = window.supabase.createClient(SB_URL, SB_ANON);
+  const { data:{ session: s }, error: sessErr } = await sb.auth.getSession();
   if(sessErr){ showDebug("Error de sesión: "+sessErr.message); }
-  if(!session){ window.location.href = "index.html"; return; }
+  if(!s){ window.location.href="index.html"; return; }
+  session = s;
 
-  const { data: profile, error: profErr } = await sb.from('profiles').select('is_pro,is_admin,display_name,avatar_url').eq('id', session.user.id).single();
+  // Traer perfil, pero tolerante a columnas faltantes
+  let p=null, pe=null;
+  try{
+    const r = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+    p = r.data; pe = r.error;
+  }catch(e){ pe=e; }
 
-  if(profErr){
-    showDebug("No pude leer tu perfil. Detalle: " + profErr.message + " (código: " + (profErr.code||'?') + "). Si dice 'column does not exist', corré los SQL de display_name/avatar_url en Supabase.");
+  if(pe){
+    showDebug("No pude leer tu perfil (<b>"+pe.message+"</b>). Si dice 'column does not exist', faltan columnas en la tabla profiles. Mientras tanto trabajo con lo mínimo.");
   }
+  profile = p || {};
 
-  const shownName = (profile && profile.display_name) ? profile.display_name : session.user.email;
-  const avatarUrl = profile && profile.avatar_url ? profile.avatar_url : null;
-  const avatarStyle = avatarUrl ? `background-image:url('${avatarUrl}');background-size:cover;background-position:center;color:transparent` : '';
-
-  $("authbtns").innerHTML = '<button class="btn ghost" id="logoutBtn">Salir</button>';
-  $("logoutBtn").onclick = async ()=>{ await sb.auth.signOut(); window.location.href="index.html"; };
+  const shownName = profile.display_name || session.user.email.split('@')[0];
+  const avatar = profile.avatar_url;
 
   $("sideName").textContent = shownName;
   $("sideAva").textContent = shownName[0].toUpperCase();
-  if(avatarUrl){ $("sideAva").style.cssText = avatarStyle; }
-
+  if(avatar){ $("sideAva").style.backgroundImage=`url('${avatar}')`; $("sideAva").style.color='transparent'; }
+  $("helloName").textContent = "Hola, "+shownName+" 👋";
   $("profEmailShow").value = session.user.email;
-  $("profName").value = profile && profile.display_name ? profile.display_name : "";
+  $("profName").value = profile.display_name || "";
   $("profAva").textContent = shownName[0].toUpperCase();
-  if(avatarUrl){
-    $("profAva").style.backgroundImage = `url('${avatarUrl}')`;
-    $("profAva").style.color = 'transparent';
-  }
+  if(avatar){ $("profAva").style.backgroundImage=`url('${avatar}')`; $("profAva").style.color='transparent'; }
 
-  $("appwrap").style.display = "block";
+  $("logoutBtn").onclick = async ()=>{ await sb.auth.signOut(); window.location.href="index.html"; };
 
-  if(profile && profile.is_pro){
-    $("dash").style.display = "flex";
-    isAdmin = !!profile.is_admin;
+  // Decidir si mostrar panel
+  if(profile.is_pro === true){
+    isAdmin = profile.is_admin === true;
     if(isAdmin){
-      $("navAdmin").style.display = "flex";
-      loadOffersForAdmin();
-      loadPartnerApplications();
-    } else if(profile && profile.is_admin === false){
-      // mensaje informativo (no error, solo nota)
+      $("navAdminBtn").classList.remove('hidden');
+      $("sideRole").textContent = "Admin · Plan Pro";
+      $("statusChip").textContent = "Admin";
     }
     await loadOffers();
+    renderLatest();
+    if(isAdmin){ loadOffersForAdmin(); loadPartnerApplications(); }
   } else {
-    $("payGate").style.display = "block";
-    if(profile && profile.is_pro === false){
-      showDebug("Tu usuario está logueado pero is_pro = false. Si querés probar como admin, activalo manualmente en Supabase → Table Editor → profiles → tu fila → is_pro = true. Igual, para que aparezca el panel Admin también tenés que marcar is_admin = true.");
-    }
+    $("payGate").classList.remove('hidden');
+    $$('.view').forEach(v=>v.classList.remove('active'));
+    $("statusChip").textContent = "Sin suscripción";
   }
 
-  // Avatar upload (local, convertido a base64 y guardado en profiles.avatar_url)
-  $("profAvaFile").addEventListener("change", async (e)=>{
-    const file = e.target.files[0];
-    if(!file) return;
+  // Avatar upload
+  $("profAvaFile").addEventListener('change', async (e)=>{
+    const file = e.target.files[0]; if(!file) return;
     if(file.size > 500000){ alert("Elegí una imagen de menos de 500 KB."); return; }
     const reader = new FileReader();
     reader.onload = async ()=>{
       const dataUrl = reader.result;
-      $("profAva").style.backgroundImage = `url('${dataUrl}')`;
-      $("profAva").style.color = 'transparent';
-      $("sideAva").style.backgroundImage = `url('${dataUrl}')`;
-      $("sideAva").style.color = 'transparent';
+      $("profAva").style.backgroundImage=`url('${dataUrl}')`; $("profAva").style.color='transparent';
+      $("sideAva").style.backgroundImage=`url('${dataUrl}')`; $("sideAva").style.color='transparent';
       const { error } = await sb.from('profiles').update({ avatar_url: dataUrl }).eq('id', session.user.id);
-      if(error){ alert("No se pudo guardar: "+error.message); }
+      if(error){ $("profErr").textContent = "No se pudo guardar: "+error.message; }
+      else { $("profOk").textContent = "✓ Foto guardada"; setTimeout(()=>$("profOk").textContent="", 2000); }
     };
     reader.readAsDataURL(file);
   });
 
   $("saveProfileBtn").onclick = async ()=>{
-    $("profErr").textContent="";
+    $("profErr").textContent=""; $("profOk").textContent="";
     const { error } = await sb.from('profiles').update({ display_name: $("profName").value }).eq('id', session.user.id);
-    if(error){ $("profErr").style.color="#ff6b6b"; $("profErr").textContent = error.message; return; }
-    $("profErr").style.color="var(--ok)"; $("profErr").textContent = "✓ Guardado";
-    setTimeout(()=>location.reload(), 800);
+    if(error){ $("profErr").textContent = error.message; return; }
+    $("profOk").textContent = "✓ Cambios guardados"; setTimeout(()=>location.reload(), 900);
   };
+});
 
-  function setView(v){
-    ["Biblioteca","Modelador","Perfil","Partners","Admin"].forEach(k=>{
-      const nav = $("nav"+k), view = $("view"+k);
-      if(nav) nav.classList.toggle("active", k===v);
-      if(view) view.classList.toggle("active", k===v);
-    });
-  }
-  $("navBiblioteca").onclick=()=>setView("Biblioteca");
-  $("navModelador").onclick=()=>setView("Modelador");
-  $("navPerfil").onclick=()=>setView("Perfil");
-  $("navPartners").onclick=()=>setView("Partners");
-  $("navAdmin").onclick=()=>setView("Admin");
+// ---------- Biblioteca ----------
+async function loadOffers(){
+  const { data, error } = await sb.from('offers').select('*').order('created_at',{ascending:false});
+  if(error){ showDebug("Error leyendo ofertas: "+error.message); return; }
+  offersData = data || [];
+  renderOffers();
+  // stats
+  $("statTotal").textContent = offersData.length;
+  $("statHot").textContent = offersData.filter(o=>o.status==='Escalando' || o.status==='Escalada').length;
+  const niches = {};
+  offersData.forEach(o=>{ if(o.niche) niches[o.niche]=(niches[o.niche]||0)+1; });
+  const top = Object.entries(niches).sort((a,b)=>b[1]-a[1])[0];
+  $("statNiche").textContent = top ? top[0] : "—";
+}
+function cardHTML(o){
+  const stClass = o.status==='Nueva' ? 'new' : (o.status==='Escalando'?'hot':'st');
+  const emoji = {Finanzas:'📊',Salud:'💪',Maternidad:'🍼',Idiomas:'🗣',Negocios:'💼',Nutrición:'🥗',Belleza:'💄',Mascotas:'🐾',Otro:'✨'}[o.niche]||'✨';
+  return `<div class="ocard">
+    <div class="cover">${emoji}</div>
+    <h3>${esc(o.name||'Sin nombre')}</h3>
+    <div class="tagrow">
+      <span class="tag ${stClass}">${esc(o.status||'')}</span>
+      <span class="tag">${esc(o.type||'')}</span>
+      <span class="tag">${esc(o.niche||'')}</span>
+      ${o.country?`<span class="tag">${esc(o.country)}</span>`:''}
+    </div>
+    <div class="meta">📈 <b>${o.ads||0}</b> anuncios activos${o.since?' · desde '+o.since:''}</div>
+    ${o.note?`<div class="meta">💡 ${esc(o.note)}</div>`:''}
+    <div class="act">
+      ${o.link?`<a href="${esc(o.link)}" target="_blank" rel="noopener">📊 Ver anuncios</a>`:''}
+      ${o.shop_link||o.shop?`<a href="${esc(o.shop_link||o.shop)}" target="_blank" rel="noopener">🛒 Ver tienda</a>`:''}
+    </div>
+  </div>`;
+}
+function esc(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-  async function loadOffers(){
-    const { data, error } = await sb.from('offers').select('*').order('created_at',{ascending:false});
-    if(error){ showDebug("Error leyendo ofertas: "+error.message); return; }
-    offersData = data || [];
-    renderOffers();
+function renderOffers(){
+  const q=($("q")?.value||"").toLowerCase(),t=$("ft")?.value||'',s=$("fs")?.value||'',c=$("fc")?.value||'';
+  const list=offersData.filter(o=>(!q||((o.name||'')+" "+(o.niche||'')).toLowerCase().includes(q))&&(!t||o.type===t)&&(!s||o.status===s)&&(!c||o.country===c));
+  if(!list.length){
+    $("grid").innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="ic">📭</div><b>No hay ofertas con esos filtros</b>${isAdmin?'Andá a Admin y sumá la primera.':'Volvé pronto, se agregan todos los días.'}</div>`;
+    return;
   }
-  function renderOffers(){
-    const q=($("q").value||"").toLowerCase(),t=$("ft").value,s=$("fs").value;
-    const list=offersData.filter(o=>(!q||(o.name+" "+o.niche).toLowerCase().includes(q))&&(!t||o.type===t)&&(!s||o.status===s));
-    if(!list.length){
-      $("grid").innerHTML = '<p class="empty">Todavía no hay ofertas cargadas. '+(isAdmin?'Andá a Admin para sumar la primera.':'Volvé pronto, se suman todos los días.')+'</p>';
-      return;
+  $("grid").innerHTML = list.map(cardHTML).join("");
+}
+function renderLatest(){
+  const latest = offersData.slice(0,3);
+  if(!latest.length){
+    $("latestGrid").innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="ic">🚀</div><b>Todavía no cargamos ofertas</b>${isAdmin?'Andá a Admin y agregá la primera.':'Pronto vas a ver las primeras.'}</div>`;
+  } else {
+    $("latestGrid").innerHTML = latest.map(cardHTML).join("");
+  }
+}
+["q","ft","fs","fc"].forEach(i=>{ const el=$(i); if(el) el.addEventListener("input",renderOffers); });
+
+// ---------- Admin ----------
+$("addOfferBtn")?.addEventListener('click', async ()=>{
+  $("offerErr").textContent=""; $("offerOk").textContent="";
+  const payload = {
+    name: $("oName").value.trim(),
+    niche: $("oNiche").value,
+    type: $("oType").value,
+    country: $("oCountry").value.trim(),
+    ads: parseInt($("oAds").value||"0",10),
+    status: $("oStatus").value,
+    link: $("oLink").value.trim(),
+    note: $("oNote").value.trim()
+  };
+  const shopLink = $("oShop").value.trim();
+  if(shopLink) payload.shop_link = shopLink;
+  if(!payload.name){ $("offerErr").textContent = "Ponele un nombre a la oferta."; return; }
+  const { error } = await sb.from('offers').insert(payload);
+  if(error){
+    // Si falla por columna shop_link que no existe, reintenta sin ella
+    if(error.message && error.message.includes('shop_link')){
+      delete payload.shop_link;
+      const r2 = await sb.from('offers').insert(payload);
+      if(r2.error){ $("offerErr").textContent = r2.error.message; return; }
+    } else {
+      $("offerErr").textContent = error.message; return;
     }
-    $("grid").innerHTML = list.map(o=>`<div class="card">
-      <div class="cover"><span style="font-size:36px">✨</span></div>
-      <h3>${o.name}</h3>
-      <div><span class="tag st">${o.status||''}</span><span class="tag">${o.type||''}</span><span class="tag">${o.niche||''}</span><span class="tag">${o.country||''}</span></div>
-      <div class="meta">${o.ads||0} anuncios activos${o.since?' · desde '+o.since:''}</div>
-      ${o.note?`<div class="meta">${o.note}</div>`:''}
-      ${o.link?`<a class="meta" style="color:var(--violet2)" href="${o.link}" target="_blank" rel="noopener">Ver en Meta Ad Library →</a>`:''}
-    </div>`).join("");
   }
-  ["q","ft","fs"].forEach(i=>$(i)&&$(i).addEventListener("input",renderOffers));
+  $("offerOk").textContent = "✓ Oferta agregada";
+  $("offerForm").reset();
+  setTimeout(()=>$("offerOk").textContent="", 2500);
+  await loadOffers(); await loadOffersForAdmin(); renderLatest();
+});
 
-  $("addOfferBtn").onclick = async ()=>{
-    $("offerErr").textContent="";
-    const payload = {
-      name: $("oName").value, niche: $("oNiche").value, type: $("oType").value,
-      country: $("oCountry").value, ads: parseInt($("oAds").value||"0",10),
-      status: $("oStatus").value, link: $("oLink").value, note: $("oNote").value
-    };
-    if(!payload.name){ $("offerErr").textContent = "Ponele un nombre."; return; }
-    const { error } = await sb.from('offers').insert(payload);
-    if(error){ $("offerErr").textContent = error.message; return; }
-    document.getElementById('offerForm').reset();
-    await loadOffers(); await loadOffersForAdmin();
-  };
-
-  async function loadOffersForAdmin(){
-    const { data } = await sb.from('offers').select('*').order('created_at',{ascending:false});
-    const list = data || [];
-    $("offerList").innerHTML = list.length ? list.map(o=>`<div class="offrow"><span>${o.name} · ${o.niche} · ${o.ads||0} ads</span><button class="del" data-id="${o.id}">Borrar</button></div>`).join("") : '<p class="empty">Todavía no cargaste ofertas.</p>';
-    document.querySelectorAll('.del').forEach(b=>b.onclick=async ()=>{
-      await sb.from('offers').delete().eq('id', b.dataset.id);
-      await loadOffers(); await loadOffersForAdmin();
-    });
-  }
-
-  async function loadPartnerApplications(){
-    const { data } = await sb.from('partner_applications').select('*').order('created_at',{ascending:false});
-    const list = data || [];
-    $("partnerList").innerHTML = list.length ? list.map(p=>`<div class="offrow" style="align-items:flex-start;flex-direction:column;gap:4px">
-      <b>${p.name}</b> · ${p.email}
-      <span class="note">${p.social||'sin red'} · ${p.audience||'sin dato de alcance'}</span>
-      <span class="note">${p.message||''}</span>
-    </div>`).join("") : '<p class="empty">Todavía no hay postulaciones.</p>';
-  }
-
-  $("applyPartnerBtn").onclick = ()=>{ $("partnerModal").classList.add("on"); };
-  $("partnerForm").addEventListener("submit", async (e)=>{
-    e.preventDefault();
-    $("partnerErr").textContent="";
-    const payload = { name:$("pName").value, email:$("pEmail").value, social:$("pSocial").value, audience:$("pAudience").value, message:$("pMessage").value };
-    const { error } = await sb.from('partner_applications').insert(payload);
-    if(error){ $("partnerErr").style.color="#ff6b6b"; $("partnerErr").textContent = error.message; return; }
-    document.getElementById('partnerForm').reset();
-    $("partnerModal").classList.remove("on");
-    alert("¡Listo! Recibimos tu postulación.");
+async function loadOffersForAdmin(){
+  const { data } = await sb.from('offers').select('*').order('created_at',{ascending:false});
+  const list = data || [];
+  if(!list.length){ $("offerList").innerHTML = `<div class="empty"><div class="ic">📭</div><b>Todavía no cargaste ofertas</b>Usá el formulario de arriba para agregar la primera.</div>`; return; }
+  $("offerList").innerHTML = list.map(o=>`<div class="offrow">
+    <div class="info"><b>${esc(o.name)}</b><span>${esc(o.niche||'')} · ${esc(o.type||'')} · ${o.ads||0} ads · ${esc(o.country||'')}</span></div>
+    <button class="btn danger-ghost sm del" data-id="${o.id}">🗑 Borrar</button>
+  </div>`).join("");
+  document.querySelectorAll('.del').forEach(b=>b.onclick=async ()=>{
+    if(!confirm('¿Borrar esta oferta?')) return;
+    await sb.from('offers').delete().eq('id', b.dataset.id);
+    await loadOffers(); await loadOffersForAdmin(); renderLatest();
   });
+}
+
+async function loadPartnerApplications(){
+  const { data } = await sb.from('partner_applications').select('*').order('created_at',{ascending:false});
+  const list = data || [];
+  if(!list.length){ $("partnerList").innerHTML = `<div class="empty"><div class="ic">🤝</div><b>Todavía no hay postulaciones</b>Cuando alguien se postule aparece acá.</div>`; return; }
+  $("partnerList").innerHTML = list.map(p=>`<div class="offrow" style="align-items:flex-start;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+      <div><b>${esc(p.name)}</b> · ${esc(p.email)}</div>
+      <span class="tag st">${esc(p.status||'Pendiente')}</span>
+    </div>
+    <div style="color:var(--mut);font-size:12px;margin-top:4px">${esc(p.social||'sin red')} · ${esc(p.audience||'sin dato de alcance')}</div>
+    ${p.message?`<div style="color:var(--mut);font-size:12.5px;margin-top:6px">💬 ${esc(p.message)}</div>`:''}
+  </div>`).join("");
+}
+
+// ---------- Partners modal ----------
+$("applyPartnerBtn")?.addEventListener('click', ()=>{ $("partnerModal").classList.add('on'); });
+$("partnerForm")?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  $("partnerErr").textContent="";
+  const payload = { name:$("pName").value.trim(), email:$("pEmail").value.trim(), social:$("pSocial").value.trim(), audience:$("pAudience").value.trim(), message:$("pMessage").value.trim() };
+  if(!payload.name || !payload.email){ $("partnerErr").textContent="Nombre y email son obligatorios."; return; }
+  const { error } = await sb.from('partner_applications').insert(payload);
+  if(error){ $("partnerErr").textContent = error.message; return; }
+  $("partnerForm").reset();
+  $("partnerModal").classList.remove("on");
+  alert("¡Listo! Recibimos tu postulación. La revisamos y te contactamos en 24-48h.");
 });
 </script>
 </body>
