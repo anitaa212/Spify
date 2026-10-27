@@ -218,7 +218,7 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--violet)}
   .herobanner .act{width:100%}
 }
 
-.gatefull{max-width:860px;margin:0 auto;padding:40px 24px 60px}
+.gatefull{max-width:860px;margin:0 auto;padding:40px 24px 60px;width:100%;box-sizing:border-box}
 .gatefull .gatecard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:40px 32px;text-align:center;margin-bottom:40px}
 .gatefull .ic{font-size:48px;margin-bottom:12px}
 .gatefull h2{margin:0 0 8px;font-size:26px;letter-spacing:-.4px}
@@ -667,11 +667,17 @@ window.addEventListener('load', async ()=>{
     renderLatest();
     if(isAdmin){ loadOffersForAdmin(); loadPartnerApplications(); }
   } else {
-    // Sin suscripción: ocultar sidebar y topbar, mostrar solo la pantalla de upgrade
+    // Sin suscripción: ocultar sidebar y topbar, mostrar solo la pantalla de upgrade centrada
     document.querySelector('.sidebar').style.display = 'none';
     document.querySelector('.topbar').style.display = 'none';
+    document.querySelector('.applayout').style.display = 'block';
     document.querySelector('.main').style.marginLeft = '0';
+    document.querySelector('.main').style.width = '100%';
+    document.querySelector('.main').style.maxWidth = '100%';
     document.querySelector('.content').style.padding = '0';
+    document.querySelector('.content').style.margin = '0 auto';
+    document.querySelector('.content').style.maxWidth = '100%';
+    document.body.style.overflow = 'auto';
     $("payGate").classList.remove('hidden');
     $$('.view').forEach(v=>v.classList.remove('active'));
   }
