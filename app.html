@@ -145,9 +145,9 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--violet)}
 
 /* ---------- Perfil ---------- */
 .profcard{display:flex;align-items:flex-start;gap:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;margin-bottom:18px;flex-wrap:wrap}
-.profava{width:94px;height:94px;border-radius:50%;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:36px;color:#fff;flex-shrink:0;background-size:cover;background-position:center;cursor:pointer;border:3px solid transparent;transition:border-color .22s,transform .2s;position:relative}
-.profava:hover{border-color:var(--violet2);transform:scale(1.03)}
-.profava::after{content:"📷";position:absolute;bottom:-4px;right:-4px;width:30px;height:30px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;font-size:14px;border:3px solid var(--bg)}
+.profava{width:94px;height:94px;border-radius:50%;background:linear-gradient(135deg,var(--violet2),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:36px;color:#fff;flex-shrink:0;position:relative}
+
+.profava-disabled::after{content:"";position:absolute;bottom:-4px;right:-4px;width:30px;height:30px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;font-size:14px;border:3px solid var(--bg)}
 .profava input{display:none}
 .proffields{flex:1;min-width:260px}
 .proffields label{display:block;font-size:11px;color:var(--mut);margin-bottom:5px;margin-top:12px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
@@ -209,6 +209,38 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--violet)}
   .herobanner{flex-wrap:wrap}
   .herobanner .act{width:100%}
 }
+
+.gatefull{max-width:860px;margin:0 auto;padding:40px 24px 60px}
+.gatefull .gatecard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:40px 32px;text-align:center;margin-bottom:40px}
+.gatefull .ic{font-size:48px;margin-bottom:12px}
+.gatefull h2{margin:0 0 8px;font-size:26px;letter-spacing:-.4px}
+.gatefull p{color:var(--mut);font-size:14.5px;margin:0 0 10px}
+.gatefull .securenote{color:var(--mut);font-size:12px;margin-top:16px}
+.gsec{text-align:center;font-size:22px;font-weight:700;margin:36px 0 20px;letter-spacing:-.3px}
+.gsec .kw{color:var(--gold)}
+.gfeats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+.gfeat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center;transition:transform .22s,border-color .22s}
+.gfeat:hover{transform:translateY(-3px);border-color:var(--violet)}
+.gfeat .gfic{font-size:28px;margin-bottom:8px}
+.gfeat b{display:block;font-size:14px;margin-bottom:6px}
+.gfeat p{color:var(--mut);font-size:12.5px;margin:0}
+.gtestis{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:10px}
+.gtesti{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;gap:12px;transition:transform .22s,border-color .22s}
+.gtesti:hover{transform:translateY(-3px);border-color:var(--violet)}
+.gav{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:17px;flex-shrink:0}
+.gstars{color:#ffd700;font-size:13px;letter-spacing:1px;margin-bottom:5px}
+.gtesti p{color:var(--tx);font-size:13px;margin:0 0 8px;line-height:1.5}
+.gtesti b{color:var(--tx);font-size:12.5px;display:block}
+.gtesti span{color:var(--mut);font-size:11px}
+.gfaqs{max-width:720px;margin:0 auto}
+.gfaq{border-bottom:1px solid var(--line)}
+.gfq{width:100%;background:none;border:0;color:var(--tx);text-align:left;padding:14px 0;font-size:14px;font-weight:600;display:flex;justify-content:space-between;cursor:pointer;font-family:inherit;gap:10px;transition:color .2s}
+.gfq:hover{color:var(--violet2)}
+.gfq span{color:var(--violet2);flex-shrink:0}
+.gfa{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.gfa p{color:var(--mut);font-size:13px;margin:0 0 14px;line-height:1.55}
+.gfaq.open .gfa{max-height:220px}
+.gfaq.open .gfq span{transform:rotate(45deg);display:inline-block}
 </style>
 </head>
 <body>
@@ -273,13 +305,60 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--violet)}
       <div id="debugArea"></div>
 
       <!-- Gate de pago -->
-      <div class="gatewrap hidden" id="payGate">
-        <div class="ic">🔒</div>
-        <h2>Activá tu Plan Pro</h2>
-        <p>Tu cuenta está creada, pero todavía no tenés el Plan Pro activo.</p>
-        <div class="bftag">🔥 BLACK FRIDAY · 40% OFF</div>
-        <br>
-        <a class="btn shine" href="index.html#plan">Suscribirme con 40% OFF</a>
+      <div class="gatefull hidden" id="payGate">
+        <div class="gatecard">
+          <div class="ic">🔒</div>
+          <h2>Activá tu Plan Pro</h2>
+          <p>Tu cuenta está creada, pero todavía no tenés el Plan Pro activo.</p>
+          <div class="bftag">🔥 BLACK FRIDAY · 40% OFF</div>
+          <a class="btn shine" href="index.html#plan" style="margin-top:14px">Suscribirme con 40% OFF</a>
+          <div class="securenote">🔒 Pago 100% seguro con Mercado Pago · ✅ Garantía 7 días</div>
+        </div>
+
+        <h3 class="gsec">¿Por qué <span class="kw">Spify</span>?</h3>
+        <div class="gfeats">
+          <div class="gfeat"><div class="gfic">⚡</div><b>Ofertas nuevas todos los días</b><p>Subimos ofertas digitales reales con 20+ anuncios activos a mano, cada día.</p></div>
+          <div class="gfeat"><div class="gfic">🎯</div><b>Datos verificados</b><p>Cada oferta se chequea en la Biblioteca de Anuncios de Meta antes de subirla.</p></div>
+          <div class="gfeat"><div class="gfic">💰</div><b>Ahorrás horas</b><p>Dejá de perder tiempo buscando y validando ofertas. Nosotros ya lo hicimos por vos.</p></div>
+          <div class="gfeat"><div class="gfic">🤝</div><b>20% recurrente de partners</b><p>Compartí Spify y ganá comisión recurrente mes a mes.</p></div>
+        </div>
+
+        <h3 class="gsec">Lo que dicen quienes ya se suscribieron</h3>
+        <div class="gtestis">
+          <div class="gtesti">
+            <div class="gav" style="background:linear-gradient(135deg,#8257f0,#5b2de0)">C</div>
+            <div>
+              <div class="gstars">★★★★★</div>
+              <p>"Encontré 4 ofertas que todavía nadie estaba tocando en mi nicho. Recuperé la suscripción en la primera semana."</p>
+              <b>Carla M.</b><span>Afiliada · AR</span>
+            </div>
+          </div>
+          <div class="gtesti">
+            <div class="gav" style="background:linear-gradient(135deg,#4b7bec,#2d3ee0)">N</div>
+            <div>
+              <div class="gstars">★★★★★</div>
+              <p>"La uso todos los días para validar ángulos antes de lanzar. Me ahorra horas de scroll en la Biblioteca de Anuncios."</p>
+              <b>Nico R.</b><span>Marketer digital · MX</span>
+            </div>
+          </div>
+          <div class="gtesti">
+            <div class="gav" style="background:linear-gradient(135deg,#20bf6b,#0e8f4d)">J</div>
+            <div>
+              <div class="gstars">★★★★★</div>
+              <p>"Ser partner me generó un ingreso extra sin crear nada, solo compartiendo el link con mi audiencia."</p>
+              <b>Jose Luis V.</b><span>Partner · CO</span>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="gsec">Preguntas frecuentes</h3>
+        <div class="gfaqs">
+          <div class="gfaq"><button class="gfq" onclick="this.parentElement.classList.toggle('open')">¿Qué es Spify?<span>+</span></button><div class="gfa"><p>Es una biblioteca de ofertas digitales con actividad publicitaria real, investigadas y subidas a mano, para que puedas validar nichos y ángulos sin perder horas buscando.</p></div></div>
+          <div class="gfaq"><button class="gfq" onclick="this.parentElement.classList.toggle('open')">¿Cómo se paga la suscripción?<span>+</span></button><div class="gfa"><p>El Plan Pro se cobra mensualmente a través de Mercado Pago, con renovación automática. Podés cancelar cuando quieras desde tu cuenta.</p></div></div>
+          <div class="gfaq"><button class="gfq" onclick="this.parentElement.classList.toggle('open')">¿Hay garantía?<span>+</span></button><div class="gfa"><p>Sí. Tenés 7 días de garantía: si no te sirve, te devolvemos el 100% del dinero sin preguntas.</p></div></div>
+          <div class="gfaq"><button class="gfq" onclick="this.parentElement.classList.toggle('open')">¿Cada cuánto se suman ofertas nuevas?<span>+</span></button><div class="gfa"><p>Todos los días se agregan ofertas nuevas a la biblioteca, priorizando las que ya muestran actividad publicitaria sostenida con 20+ anuncios activos.</p></div></div>
+          <div class="gfaq"><button class="gfq" onclick="this.parentElement.classList.toggle('open')">¿Qué gano si me vuelvo partner?<span>+</span></button><div class="gfa"><p>Como partner recibís un link único. Por cada persona que se suscribe al Plan Pro usando tu link, cobrás un 20% de comisión recurrente mientras siga activa.</p></div></div>
+        </div>
       </div>
 
       <!-- ============ INICIO ============ -->
@@ -400,9 +479,7 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--violet)}
           <p>Personalizá tu foto y tu nombre para mostrar.</p>
         </div>
         <div class="profcard">
-          <label class="profava" id="profAva" title="Hacé clic para cambiar la foto">?
-            <input type="file" id="profAvaFile" accept="image/*">
-          </label>
+          <div class="profava" id="profAva">?</div>
           <div class="proffields">
             <label>Email</label>
             <input id="profEmailShow" disabled>
@@ -561,12 +638,12 @@ window.addEventListener('load', async ()=>{
 
   $("sideName").textContent = shownName;
   $("sideAva").textContent = shownName[0].toUpperCase();
-  if(avatar){ $("sideAva").style.backgroundImage=`url('${avatar}')`; $("sideAva").style.color='transparent'; }
+// (avatar en sidebar: solo iniciales)
   $("helloName").textContent = "Hola, "+shownName+" 👋";
   $("profEmailShow").value = session.user.email;
   $("profName").value = profile.display_name || "";
   $("profAva").textContent = shownName[0].toUpperCase();
-  if(avatar){ $("profAva").style.backgroundImage=`url('${avatar}')`; $("profAva").style.color='transparent'; }
+// (foto de perfil desactivada por ahora)
 
   $("logoutBtn").onclick = async ()=>{ await sb.auth.signOut(); window.location.href="index.html"; };
 
@@ -582,52 +659,14 @@ window.addEventListener('load', async ()=>{
     renderLatest();
     if(isAdmin){ loadOffersForAdmin(); loadPartnerApplications(); }
   } else {
+    // Sin suscripción: ocultar sidebar y topbar, mostrar solo la pantalla de upgrade
+    document.querySelector('.sidebar').style.display = 'none';
+    document.querySelector('.topbar').style.display = 'none';
+    document.querySelector('.main').style.marginLeft = '0';
+    document.querySelector('.content').style.padding = '0';
     $("payGate").classList.remove('hidden');
     $$('.view').forEach(v=>v.classList.remove('active'));
-    $("statusChip").textContent = "Sin suscripción";
   }
-
-  // Avatar upload — comprime a 300x300 JPG (~80 KB) para no explotar la base
-  $("profAvaFile").addEventListener('change', async (e)=>{
-    const file = e.target.files[0]; if(!file) return;
-    if(file.size > 10000000){ alert("Elegí una imagen de menos de 10 MB."); return; }
-    $("profOk").textContent = "⏳ Procesando foto..."; $("profErr").textContent="";
-    try{
-      const img = new Image();
-      const fileUrl = URL.createObjectURL(file);
-      img.src = fileUrl;
-      await new Promise((res, rej)=>{ img.onload=res; img.onerror=rej; });
-      const size = 300;
-      const canvas = document.createElement('canvas');
-      canvas.width = size; canvas.height = size;
-      const ctx = canvas.getContext('2d');
-      // Recorte cuadrado centrado
-      const minSide = Math.min(img.width, img.height);
-      const sx = (img.width - minSide)/2, sy = (img.height - minSide)/2;
-      ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
-      URL.revokeObjectURL(fileUrl);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-
-      // Mostrar en pantalla ya
-      $("profAva").style.backgroundImage=`url('${dataUrl}')`; $("profAva").style.color='transparent';
-      $("sideAva").style.backgroundImage=`url('${dataUrl}')`; $("sideAva").style.color='transparent';
-
-      // Guardar en Supabase — con .select() para que si RLS falla nos devuelva array vacío y lo detectemos
-      const { data, error } = await sb.from('profiles').update({ avatar_url: dataUrl }).eq('id', session.user.id).select();
-      if(error){ throw error; }
-      if(!data || data.length === 0){
-        // La política RLS no deja hacer UPDATE. Intento con upsert.
-        const { data: data2, error: e2 } = await sb.from('profiles').upsert({ id: session.user.id, avatar_url: dataUrl }).select();
-        if(e2) throw e2;
-        if(!data2 || data2.length === 0) throw new Error("La política de seguridad no permite actualizar tu fila. Corré el SQL del fix de policy (ver mensaje de Claude).");
-      }
-      $("profOk").textContent = "✓ Foto guardada"; setTimeout(()=>$("profOk").textContent="", 2500);
-    }catch(err){
-      console.error("Avatar error:", err);
-      $("profOk").textContent = "";
-      $("profErr").textContent = "No se pudo guardar: " + (err.message || err);
-    }
-  });
 
   $("saveProfileBtn").onclick = async ()=>{
     $("profErr").textContent=""; $("profOk").textContent="⏳ Guardando...";
