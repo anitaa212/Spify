@@ -3,6 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Biblioteca de ofertas digitales escaladas con 20+ anuncios activos. Investigadas y subidas a mano para que valides nichos sin perder horas.">
+<meta name="theme-color" content="#5b2de0">
+<meta property="og:title" content="Spify · Biblioteca de ofertas escaladas">
+<meta property="og:description" content="Dejá de perder horas scrolleando. Encontrá ofertas digitales que están escalando ahora en Meta Ads.">
+<meta property="og:url" content="https://spify.online/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Spify">
+<link rel="canonical" href="https://spify.online/">
+<link rel="preconnect" href="https://lirvbjfnjrvdmshjrrbl.supabase.co" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://lirvbjfnjrvdmshjrrbl.supabase.co">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <title>Spify · Biblioteca de ofertas escaladas</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
 <style>
@@ -458,10 +470,19 @@ window.addEventListener('load', function(){
   $("tabSignup").onclick=()=>openModal("signup");
   $("signupBtn").onclick=()=>openModal("signup");
 
-  // Si ya hay sesión, mandar directo al panel
-  sb.auth.getSession().then(({data:{session}})=>{
-    if(session){ window.location.href = "app.html"; }
-  });
+  // Si hay sesión, mostrar botón "Mi panel" en vez de "Ingresar/Crear cuenta"
+  async function updateAuthButtons(){
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session){
+      const nm = (session.user.email||'cuenta').split('@')[0];
+      const authbtns = document.getElementById("authbtns");
+      if(authbtns){
+        authbtns.innerHTML = '<a href="app.html" class="btn ghost">Mi panel</a> <button class="btn" id="logoutBtnTop">Salir</button>';
+        document.getElementById("logoutBtnTop").onclick = async ()=>{ await sb.auth.signOut(); location.reload(); };
+      }
+    }
+  }
+  updateAuthButtons();
 
   $("authForm").addEventListener("submit", async (e)=>{
     e.preventDefault(); $("authErr").textContent="";
