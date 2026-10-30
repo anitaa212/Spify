@@ -249,6 +249,12 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--violet)}
 .gfa p{color:var(--mut);font-size:13px;margin:0 0 14px;line-height:1.55}
 .gfaq.open .gfa{max-height:220px}
 .gfaq.open .gfq span{transform:rotate(45deg);display:inline-block}
+
+.gatetop{display:flex;justify-content:space-between;align-items:center;max-width:860px;margin:0 auto 20px;padding:14px 10px}
+.gatetop-link{color:var(--mut);text-decoration:none;font-size:14px;padding:8px 14px;border-radius:9px;transition:all .2s;border:1px solid transparent}
+.gatetop-link:hover{color:var(--violet2);background:var(--violetlight);border-color:var(--violet)}
+.gatetop-logout{background:none;border:1px solid var(--line);color:var(--mut);padding:8px 14px;border-radius:9px;cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
+.gatetop-logout:hover{border-color:#ff6b6b;color:#ff6b6b}
 </style>
 </head>
 <body>
@@ -314,6 +320,10 @@ input:focus,select:focus,textarea:focus{outline:0;border-color:var(--violet)}
 
       <!-- Gate de pago -->
       <div class="gatefull hidden" id="payGate">
+        <div class="gatetop">
+          <a href="index.html" class="gatetop-link">← Volver al inicio</a>
+          <button class="gatetop-logout" id="gateLogoutBtn">Cerrar sesión</button>
+        </div>
         <div class="gatecard">
           <div class="ic">🔒</div>
           <h2>Activá tu Plan Pro</h2>
@@ -680,6 +690,9 @@ window.addEventListener('load', async ()=>{
     document.body.style.overflow = 'auto';
     $("payGate").classList.remove('hidden');
     $$('.view').forEach(v=>v.classList.remove('active'));
+    // Handler del botón de logout dentro de la gatefull
+    const gl = document.getElementById('gateLogoutBtn');
+    if(gl){ gl.onclick = async ()=>{ await sb.auth.signOut(); window.location.href="index.html"; }; }
   }
 
   $("saveProfileBtn").onclick = async ()=>{
